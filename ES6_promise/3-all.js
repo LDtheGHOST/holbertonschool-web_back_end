@@ -1,11 +1,16 @@
-export default function handleResponseFromAPI(promise) {
-    return promise
-      .then(() => {
-        console.log('Got a response from the API');
-        return { status: 200, body: 'success' };
-      })
-      .catch(() => {
-        console.log('Got a response from the API');
-        return new Error();
-      });
-  }
+// 3-all.js
+
+import { uploadPhoto, createUser } from './utils.js';
+
+function handleProfileSignup() {
+    return Promise.all([uploadPhoto(), createUser()])
+        .then((results) => {
+            const [photoResponse, userResponse] = results;
+            console.log(`${photoResponse.body} ${userResponse.firstName} ${userResponse.lastName}`);
+        })
+        .catch(() => {
+            console.log('Signup system offline');
+        });
+}
+
+export default handleProfileSignup;
