@@ -1,40 +1,36 @@
-// Initialize express
 const readDatabase = require('../utils');
 
 class StudentsController {
-  static async getAllStudents(req, res) {
-    const databasePath = process.argv[2];
+  static getAllStudents(request, response) {
     try {
-      const data = await readDatabase(databasePath);
-      let output = 'This is the list of our students';
-
-      Object.keys(data)
-        .sort((a, b) => a.localeCompare(b))
-        .forEach((field) => {
-          output += `\nNumber of students in ${field}: ${data[field].length}. List: ${data[field].join(', ')}`;
+      readDatabase(process.argv[2])
+        .then((fields) => {
+          let responseText = 'This is the list of our students\n';
+          const responseFields = [];
+          for (const i of Object.keys(fields)) {
+            responseFields.push(`Number of students in ${i}: ${fields[i].length}. List: ${fields[i].join(', ')}`);
+          }
+          responseText += responseFields.join('\n');
+          response.status(200).send(responseText);
         });
-
-      res.status(200).send(output);
-    } catch (error) {
-      res.status(500).send('Cannot load the database');
+    } catch (_error) {
+      response.status(500).send('Cannot load the database');
     }
   }
 
-  static async getAllStudentsByMajor(req, res) {
-    const databasePath = process.argv[2];
-    const { major } = req.params;
-
-    if (major !== 'CS' && major !== 'SWE') {
-      res.status(500).send('Major parameter must be CS or SWE');
-      return;
-    }
-
+  static getAllStudentsByMajor(request, response) {
     try {
-      const data = await readDatabase(databasePath);
-      const students = data[major] || [];
-      res.status(200).send(`List: ${students.join(', ')}`);
+      readDatabase(process.argv[2])
+        .then((fields) => {
+          const { major } = request.params;
+          if (fields[major]) {
+            response.status(200).send(`List: ${fields[major].join(', ')}`);
+          } else {
+            response.status(500).send('Major parameter must be CS or SWE');
+          }
+        });
     } catch (error) {
-      res.status(500).send('Cannot load the database');
+      response.status(500).send('Cannot load the database');
     }
   }
 }

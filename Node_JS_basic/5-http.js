@@ -12,21 +12,11 @@ const app = http.createServer((req, res) => {
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
 
-    // Redirige temporairement console.log pour capturer les messages
-    const logs = [];
-    const originalConsoleLog = console.log;
-    console.log = (message) => logs.push(message);
-
     countStudents(process.argv[2])
-      .then(() => {
-        // Restaure console.log à son état initial
-        console.log = originalConsoleLog;
-
-        // Combine les messages capturés et les ajoute à la réponse
-        res.end(`This is the list of our students\n${logs.join('\n')}`);
+      .then((response) => {
+        res.end(`This is the list of our students\n${response}`);
       })
       .catch((error) => {
-        console.log = originalConsoleLog; // Restaure console.log même en cas d'erreur
         res.statusCode = 500;
         res.end(error.message);
       });
@@ -38,7 +28,7 @@ const app = http.createServer((req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
+  console.log(`Server listen on port ${port}`);
 });
 
 module.exports = app;

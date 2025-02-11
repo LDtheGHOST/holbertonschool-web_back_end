@@ -1,3 +1,4 @@
+// 2-read_file.js
 const fs = require('fs');
 
 function countStudents(path) {
