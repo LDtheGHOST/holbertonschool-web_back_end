@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-'''Module for the tasks'''
+"""function that take an integer and returns a asyncio.Task"""
 import asyncio
-import importlib
-wait_random = importlib.import_module('0-basic_async_syntax').wait_random
+wait_random = __import__('0-basic_async_syntax').wait_random
 
 
 def task_wait_random(max_delay: int) -> asyncio.Task:
-    '''Return a asyncio.Task'''
+    """Creates an asyncio Task to run wait_random with the given max_delay."""
     return asyncio.create_task(wait_random(max_delay))
