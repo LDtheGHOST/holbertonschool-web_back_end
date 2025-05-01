@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
-""" Annotation add """
+"""
+    0-add.py
+"""
 
 
 def add(a: float, b: float) -> float:
-    """ type-annotated function add"""
+    """
+        Add two floats and return a float.
+    """
     return a + b
