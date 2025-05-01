@@ -5,7 +5,7 @@ Deletion-resilient hypermedia pagination
 
 import csv
 import math
-from typing import List, Dict, Any
+from typing import List, Dict
 
 
 class Server:
@@ -40,35 +40,28 @@ class Server:
 
     def get_hyper_index(self, index: int = None, page_size: int = 10) -> Dict:
         """
-        Returns a dictionary with pagination details, resiliant to deletion
-
-        Parameters:
-            index (int): The index of the data to retrieve
-            page_size (int): The number of items per page
-
-        Returns:
-            Dict[str, Any]: A dictionary with the following key-value pairs
-                - index (int): The current index of the data
-                - next_index (int): The next index of the data
-                - page_size (int): The number of items per page
-                - data (List): The page of data
+        Returns a dictionary with pagination
+        metadata that is resilient to deletions.
         """
-        assert index is not None and isinstance(index, int) and \
-            0 <= index < len(self.indexed_dataset()), \
-            "index must be a valid index in the dataset"
+        assert isinstance
+        (index, int) and index >= 0, "Index must be a non-negative integer"
+        assert index < len(self.indexed_dataset()), "Index is out of range"
 
-        indexed_dataset = self.indexed_dataset()
         data = []
-        next_index = index
+        current_index = index
+        dataset = self.indexed_dataset()
 
-        for next_index in range(index, index + page_size):
-            if next_index in indexed_dataset:
-                data.append(indexed_dataset[next_index])
-            else:
-                next_index += 1
+        # Collect the data for the page, skipping deleted entries
+        while len(data) < page_size and current_index < len(dataset):
+            if current_index in dataset:
+                data.append(dataset[current_index])
+            current_index += 1
+
+        next_index = current_index if current_index < len(dataset) else None
+
         return {
-            'index': index,
-            'next_index': next_index,
-            'page_size': page_size,
-            'data': data
+            "index": index,
+            "data": data,
+            "page_size": len(data),
+            "next_index": next_index
         }
