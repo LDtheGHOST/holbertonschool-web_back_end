@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
-"""Simple helper function"""
-
-from typing import Tuple
+"""Function index range"""
 
 
-def index_range(page: int, page_size: int) -> tuple:
-    '''returns a tuple of size two containing a start index and an end index'''
-    return ((page - 1) * page_size, page * page_size)
+def index_range(page, page_size):
+    """This function calculates the start and end index,
+    for a given page number and page size."""
+    start = (page - 1) * page_size
+    end = page * page_size
+    return tuple([start, end])
