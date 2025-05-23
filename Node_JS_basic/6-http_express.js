@@ -1,4 +1,3 @@
-// 6-http_express.js
 const express = require('express');
 
 const port = 1245;
